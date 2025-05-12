@@ -23,10 +23,10 @@ export default function Home() {
             {/* Main Content */}
             <div className="space-y-4 md:space-y-6 mb-10 md:mb-16">
               <h1 className="font-funnel-display text-3xl md:text-5xl lg:text-7xl font-bold text-black max-w-4xl">
-                Verifiable Randomness Starter Kit
+                Blocklock Encryption Starter Kit
               </h1>
               <p className="font-funnel-sans text-lg md:text-xl text-gray-500">
-                Get trustless, on-chain RNG in just a few lines of code — powered by Randamu.
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
               </p>
             </div>
           </div>
@@ -39,16 +39,12 @@ export default function Home() {
               <span className="font-funnel-sans text-gray-900">Try out the Demos</span>
             </div>
             <div className="flex flex-col md:flex-row gap-2 md:gap-0 w-full md:w-auto">
-              <Link href="/randomnumber" className="w-full md:w-[200px]">
+              <Link href="/blocklock" className="w-full md:w-[200px]">
                 <div className="w-full md:w-[200px] py-3 font-funnel-sans text-gray-900 border border-gray-200 hover:border-gray-400 transition-colors text-center">
-                  Verifiable RNG
+                  Text Encrypt
                 </div>
               </Link>
-              <Link href="/coinflip" className="w-full md:w-[200px]">
-                <div className="w-full md:w-[200px] py-3 font-funnel-sans text-gray-900 border border-gray-200 hover:border-gray-400 transition-colors text-center">
-                  Coin Flip
-                </div>
-              </Link>
+
             </div>
           </div>
         </div>
