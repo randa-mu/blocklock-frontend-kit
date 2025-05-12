@@ -8,6 +8,19 @@ import Header from './header';
 import Wallet from '../wallet';
 import { ethers, getBytes, parseEther } from "ethers";
 import { Blocklock, SolidityEncoder, encodeCiphertextToSolidity, encodeCondition } from "blocklock-js";
+import {
+  ZeroAddress,
+  isHexString,
+  toUtf8Bytes,
+  AbiCoder,
+  Signer,
+  EthersError,
+  EventFragment,
+  Interface,
+  Result,
+  TransactionReceipt,
+  Provider,
+} from "ethers";
 
 const BlockLockPage = () => {
 
@@ -45,39 +58,43 @@ const BlockLockPage = () => {
       const provider = new ethers.BrowserProvider(walletClient.transport);
       const signer = await provider.getSigner();
 
-      // Set block height (current block + 2)
-      const blockHeight = BigInt(await provider.getBlockNumber() + 20);
+      // WORKING - TS - DO NOT TOUCH
 
-      // Value to encrypt (4 ETH as uint256)
-      const msg = parseEther("4");
+      // const blocklock = Blocklock.createBaseSepolia(signer)
+      // const plaintext = Buffer.from("hello world!")
+      // const targetBlock = BigInt(25592255)
+      // console.log(`before encrypt: ${targetBlock} and target: ${targetBlock}`)
+      // const { id } = await blocklock.encryptAndRegister(plaintext, targetBlock)
+      // console.log("after encrypt")
 
-      // Encode the uint256 value
+      // WIP - CONTRACT INTEGRATION
+
+      const targetBlock = BigInt(26592255)
+      const conditionBytes = encodeCondition(targetBlock);
+      console.log(BigInt("84532"))
+      const blocklockjs = new Blocklock(signer, "0x82Fed730CbdeC5A2D8724F2e3b316a70A565e27e", BigInt("84532"));
       const encoder = new SolidityEncoder();
-      const msgBytes = encoder.encodeUint256(msg);
+      const msgBytes = encoder.encodeString("THE MESSAGE TO BE ENCRYPTED");
       const encodedMessage = getBytes(msgBytes);
 
-      // Encrypt the encoded message
-      const blocklockjs = new Blocklock(signer, "0x82Fed730CbdeC5A2D8724F2e3b316a70A565e27e", BigInt(84532));
-      const ciphertext = blocklockjs.encrypt(encodedMessage, blockHeight);
+      const ciphertext = blocklockjs.encrypt(encodedMessage, targetBlock);
+      console.log(CONTRACT_ADDRESS)
 
-      // Generate the timelock encryption condition bytes string
-      const conditionBytes = encodeCondition(blockHeight);
       const callbackGasLimit = 500_000;
+      try {
+        writeContract({
+          address: CONTRACT_ADDRESS,
+          abi: CONTRACT_ABI,
+          functionName: 'createTimelockRequestWithDirectFunding',
+          args: [
+            callbackGasLimit, conditionBytes, encodeCiphertextToSolidity(ciphertext)
+          ],
+        });
+        console.log("click")
+      } catch (error) {
+        console.error('Transfer failed:', error);
+      }
 
-      console.log("Writing to contract with config:", {
-        callbackGasLimit,
-        conditionBytes,
-        ciphertext: encodeCiphertextToSolidity(ciphertext)
-      });
-
-      const tx = writeContract({
-        address: CONTRACT_ADDRESS,
-        abi: CONTRACT_ABI,
-        functionName: 'createTimelockRequestWithDirectFunding',
-        args: [callbackGasLimit, conditionBytes, encodeCiphertextToSolidity(ciphertext)],
-      });
-
-      console.log("Transaction hash:", tx);
     } catch (error) {
       console.error('Contract write failed:', error);
       if (error instanceof Error) {

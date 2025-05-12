@@ -7,8 +7,7 @@ import {
 } from '@rainbow-me/rainbowkit';
 import { WagmiProvider } from 'wagmi';
 import {
-    baseSepolia,
-    filecoinCalibration
+    baseSepolia
 } from 'wagmi/chains';
 import {
     QueryClientProvider,
@@ -20,7 +19,7 @@ const queryClient = new QueryClient();
 const config = getDefaultConfig({
     appName: 'Randamu',
     projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID!,
-    chains: [baseSepolia, filecoinCalibration],
+    chains: [baseSepolia],
     ssr: true, // If your dApp uses server side rendering (SSR)
     transports: {
         http: {
