@@ -25,8 +25,8 @@ export default function Home() {
               <h1 className="font-funnel-display text-3xl md:text-5xl lg:text-7xl font-bold text-black max-w-4xl">
                 Blocklock Encryption Starter Kit
               </h1>
-              <p className="font-funnel-sans text-lg md:text-xl text-gray-500">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              <p className="font-funnel-display text-lg md:text-xl text-gray-500">
+                Securely encrypt your file until a designated time.
               </p>
             </div>
           </div>
@@ -36,11 +36,11 @@ export default function Home() {
         <div className="container mx-auto px-4 md:px-16">
           <div className="flex flex-col md:flex-row items-center justify-between border-t border-gray-200 pt-6 md:pt-8 gap-4 md:gap-0">
             <div className="flex items-center gap-2">
-              <span className="font-funnel-sans text-gray-900">Try out the Demos</span>
+              <span className="ffont-funnel-display text-gray-900">Try out the Demos</span>
             </div>
             <div className="flex flex-col md:flex-row gap-2 md:gap-0 w-full md:w-auto">
               <Link href="/blocklock" className="w-full md:w-[200px]">
-                <div className="w-full md:w-[200px] py-3 font-funnel-sans text-gray-900 border border-gray-200 hover:border-gray-400 transition-colors text-center">
+                <div className="w-full md:w-[200px] py-3 text-gray-900 border border-gray-200 hover:border-gray-400 transition-colors text-center font-funnel-display">
                   Text Encrypt
                 </div>
               </Link>
@@ -62,22 +62,22 @@ export default function Home() {
                 height={150}
                 alt="Randamu Logo"
               />
-              <p className="font-funnel-sans text-gray-400 mt-2">Verifiable Randomness for Web3</p>
+              <p className="font-funnel-display text-gray-400 mb-2">Randamu</p>
             </div>
             <div className="flex space-x-6">
-              <a href="https://docs.randa.mu/" target="_blank" className="text-gray-400 hover:text-white transition-colors duration-300">
+              <a href="https://docs.randa.mu/" target="_blank" className="text-gray-400 hover:text-black transition-colors duration-300 font-funnel-display">
                 Documentation
               </a>
-              <a href="https://github.com/randa-mu" target="_blank" className="text-gray-400 hover:text-white transition-colors duration-300">
+              <a href="https://github.com/randa-mu" target="_blank" className="text-gray-400 hover:text-black transition-colors duration-300 font-funnel-display">
                 GitHub
               </a>
-              <a href="https://x.com/RandamuInc/" target="_blank" className="text-gray-400 hover:text-white transition-colors duration-300">
+              <a href="https://x.com/RandamuInc/" target="_blank" className="text-gray-400 hover:text-black transition-colors duration-300 font-funnel-display">
                 Twitter
               </a>
             </div>
           </div>
           <div className="mt-6 md:mt-8 pt-6 md:pt-8 border-t border-gray-800 text-center">
-            <p className="font-funnel-sans text-gray-400">
+            <p className="font-funnel-display text-gray-400">
               Built with ❤️ by FIL-B
             </p>
           </div>

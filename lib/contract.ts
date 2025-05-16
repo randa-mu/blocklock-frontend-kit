@@ -1,5 +1,5 @@
 // Base Sepolia.
-export const CONTRACT_ADDRESS = "0x261A40ED988e5C8D0f1d948232247Aa2fC73d52F"
+export const CONTRACT_ADDRESS = "0x1fC46532a5828A8a23585e1dD644c63e8E80f9F7"
 
 export const CONTRACT_ABI = [
 	{
@@ -21,6 +21,16 @@ export const CONTRACT_ABI = [
 			{
 				"internalType": "uint32",
 				"name": "callbackGasLimit",
+				"type": "uint32"
+			},
+			{
+				"internalType": "uint32",
+				"name": "_encryptedAt",
+				"type": "uint32"
+			},
+			{
+				"internalType": "uint32",
+				"name": "_decryptedAt",
 				"type": "uint32"
 			},
 			{
@@ -87,6 +97,16 @@ export const CONTRACT_ABI = [
 				"type": "uint32"
 			},
 			{
+				"internalType": "uint32",
+				"name": "_encryptedAt",
+				"type": "uint32"
+			},
+			{
+				"internalType": "uint32",
+				"name": "_decryptedAt",
+				"type": "uint32"
+			},
+			{
 				"internalType": "bytes",
 				"name": "condition",
 				"type": "bytes"
@@ -134,7 +154,7 @@ export const CONTRACT_ABI = [
 				"type": "uint256"
 			}
 		],
-		"stateMutability": "payable",
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -377,34 +397,12 @@ export const CONTRACT_ABI = [
 	},
 	{
 		"inputs": [],
-		"name": "encryptedValue",
+		"name": "currentRequestId",
 		"outputs": [
 			{
-				"components": [
-					{
-						"internalType": "uint256[2]",
-						"name": "x",
-						"type": "uint256[2]"
-					},
-					{
-						"internalType": "uint256[2]",
-						"name": "y",
-						"type": "uint256[2]"
-					}
-				],
-				"internalType": "struct BLS.PointG2",
-				"name": "u",
-				"type": "tuple"
-			},
-			{
-				"internalType": "bytes",
-				"name": "v",
-				"type": "bytes"
-			},
-			{
-				"internalType": "bytes",
-				"name": "w",
-				"type": "bytes"
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
 			}
 		],
 		"stateMutability": "view",
@@ -438,38 +436,80 @@ export const CONTRACT_ABI = [
 	},
 	{
 		"inputs": [],
-		"name": "plainTextValue",
-		"outputs": [
-			{
-				"internalType": "string",
-				"name": "",
-				"type": "string"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "requestId",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
 		"name": "subscriptionId",
 		"outputs": [
 			{
 				"internalType": "uint256",
 				"name": "",
 				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "userRequests",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "requestedBy",
+				"type": "address"
+			},
+			{
+				"internalType": "uint32",
+				"name": "encryptedAt",
+				"type": "uint32"
+			},
+			{
+				"internalType": "uint32",
+				"name": "decryptedAt",
+				"type": "uint32"
+			},
+			{
+				"components": [
+					{
+						"components": [
+							{
+								"internalType": "uint256[2]",
+								"name": "x",
+								"type": "uint256[2]"
+							},
+							{
+								"internalType": "uint256[2]",
+								"name": "y",
+								"type": "uint256[2]"
+							}
+						],
+						"internalType": "struct BLS.PointG2",
+						"name": "u",
+						"type": "tuple"
+					},
+					{
+						"internalType": "bytes",
+						"name": "v",
+						"type": "bytes"
+					},
+					{
+						"internalType": "bytes",
+						"name": "w",
+						"type": "bytes"
+					}
+				],
+				"internalType": "struct TypesLib.Ciphertext",
+				"name": "encryptedValue",
+				"type": "tuple"
+			},
+			{
+				"internalType": "string",
+				"name": "message",
+				"type": "string"
 			}
 		],
 		"stateMutability": "view",

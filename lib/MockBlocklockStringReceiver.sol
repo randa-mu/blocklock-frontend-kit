@@ -8,14 +8,25 @@ import {AbstractBlocklockReceiver} from "blocklock-solidity/src/AbstractBlockloc
 
 /// @notice This contract is used for testing only and should not be used for production.
 contract MockBlocklockStringReceiver is AbstractBlocklockReceiver {
-    uint256 public requestId;
-    TypesLib.Ciphertext public encryptedValue;
-    string public plainTextValue;
+    
+    uint256 public currentRequestId;
+
+    struct Request {
+        address requestedBy;                 
+        uint32 encryptedAt;                  
+        uint32 decryptedAt;                  
+        TypesLib.Ciphertext encryptedValue; 
+        string message;                     
+    }
+
+    mapping(uint256 => Request) public userRequests;
 
     constructor(address blocklockContract) AbstractBlocklockReceiver(blocklockContract) {}
 
     function createTimelockRequestWithDirectFunding(
         uint32 callbackGasLimit,
+        uint32 _encryptedAt,
+        uint32 _decryptedAt,
         bytes calldata condition,
         TypesLib.Ciphertext calldata encryptedData
     ) external returns (uint256, uint256) {
@@ -23,28 +34,44 @@ contract MockBlocklockStringReceiver is AbstractBlocklockReceiver {
         (uint256 requestID, uint256 requestPrice) =
             _requestBlocklockPayInNative(callbackGasLimit, condition, encryptedData);
         // store request id
-        requestId = requestID;
+        currentRequestId = requestID;
         // store Ciphertext
-        encryptedValue = encryptedData;
+        userRequests[requestID] = Request({
+        requestedBy: msg.sender,
+        encryptedAt: _encryptedAt,
+        decryptedAt: _decryptedAt,
+        encryptedValue: encryptedData,
+        message:""
+    });
+
         return (requestID, requestPrice);
     }
 
     function createTimelockRequestWithSubscription(
         uint32 callbackGasLimit,
+        uint32 _encryptedAt,
+        uint32 _decryptedAt,
         bytes calldata condition,
         TypesLib.Ciphertext calldata encryptedData
-    ) external payable returns (uint256) {
+    ) external returns (uint256) {
         // create timelock request
         uint256 requestID = _requestBlocklockWithSubscription(callbackGasLimit, condition, encryptedData);
         // store request id
-        requestId = requestID;
+        currentRequestId = requestID;
         // store Ciphertext
-        encryptedValue = encryptedData;
+        userRequests[requestID] = Request({
+        requestedBy: msg.sender,
+        encryptedAt: _encryptedAt,
+        decryptedAt: _decryptedAt,
+        encryptedValue: encryptedData,
+        message: ""
+    });
         return requestID;
     }
 
     function _onBlocklockReceived(uint256 _requestId, bytes calldata decryptionKey) internal override {
-        require(requestId == _requestId, "Invalid request id");
-        plainTextValue = abi.decode(_decrypt(encryptedValue, decryptionKey), (string));
+        require(currentRequestId >= _requestId, "Invalid request id");
+        Request storage request = userRequests[_requestId];
+        request.message = abi.decode(_decrypt(request.encryptedValue, decryptionKey), (string));
     }
 }
