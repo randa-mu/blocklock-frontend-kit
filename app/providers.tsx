@@ -7,24 +7,23 @@ import {
 } from '@rainbow-me/rainbowkit';
 import { WagmiProvider } from 'wagmi';
 import {
-    baseSepolia
+    filecoinCalibration
 } from 'wagmi/chains';
 import {
     QueryClientProvider,
     QueryClient,
 } from "@tanstack/react-query";
+import { http } from 'wagmi';
 
 const queryClient = new QueryClient();
 
 const config = getDefaultConfig({
     appName: 'Randamu',
     projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID!,
-    chains: [baseSepolia],
-    ssr: true, // If your dApp uses server side rendering (SSR)
+    chains: [filecoinCalibration],
+    ssr: true,
     transports: {
-        http: {
-            url: 'http://localhost:3000'
-        }
+        [filecoinCalibration.id]: http('https://api.calibration.node.glif.io/rpc/v1')
     }
 });
 

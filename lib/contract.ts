@@ -1,5 +1,5 @@
 // Base Sepolia.
-export const CONTRACT_ADDRESS = "0x1fC46532a5828A8a23585e1dD644c63e8E80f9F7"
+export const CONTRACT_ADDRESS = "0xf55a0FaFb22CaCF155E7fe069Cc177D2e9089EC2"
 
 export const CONTRACT_ABI = [
 	{
@@ -86,75 +86,7 @@ export const CONTRACT_ABI = [
 				"type": "uint256"
 			}
 		],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint32",
-				"name": "callbackGasLimit",
-				"type": "uint32"
-			},
-			{
-				"internalType": "uint32",
-				"name": "_encryptedAt",
-				"type": "uint32"
-			},
-			{
-				"internalType": "uint32",
-				"name": "_decryptedAt",
-				"type": "uint32"
-			},
-			{
-				"internalType": "bytes",
-				"name": "condition",
-				"type": "bytes"
-			},
-			{
-				"components": [
-					{
-						"components": [
-							{
-								"internalType": "uint256[2]",
-								"name": "x",
-								"type": "uint256[2]"
-							},
-							{
-								"internalType": "uint256[2]",
-								"name": "y",
-								"type": "uint256[2]"
-							}
-						],
-						"internalType": "struct BLS.PointG2",
-						"name": "u",
-						"type": "tuple"
-					},
-					{
-						"internalType": "bytes",
-						"name": "v",
-						"type": "bytes"
-					},
-					{
-						"internalType": "bytes",
-						"name": "w",
-						"type": "bytes"
-					}
-				],
-				"internalType": "struct TypesLib.Ciphertext",
-				"name": "encryptedData",
-				"type": "tuple"
-			}
-		],
-		"name": "createTimelockRequestWithSubscription",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "nonpayable",
+		"stateMutability": "payable",
 		"type": "function"
 	},
 	{
@@ -168,7 +100,7 @@ export const CONTRACT_ABI = [
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "blocklockContract",
+				"name": "blocklockSender",
 				"type": "address"
 			}
 		],
@@ -249,7 +181,7 @@ export const CONTRACT_ABI = [
 		"inputs": [
 			{
 				"internalType": "uint256",
-				"name": "requestID",
+				"name": "requestId",
 				"type": "uint256"
 			},
 			{
@@ -422,6 +354,25 @@ export const CONTRACT_ABI = [
 		"type": "function"
 	},
 	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "requestId",
+				"type": "uint256"
+			}
+		],
+		"name": "isInFlight",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [],
 		"name": "owner",
 		"outputs": [
@@ -429,6 +380,25 @@ export const CONTRACT_ABI = [
 				"internalType": "address",
 				"name": "",
 				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "subId",
+				"type": "uint256"
+			}
+		],
+		"name": "pendingRequestExists",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
 			}
 		],
 		"stateMutability": "view",

@@ -7,7 +7,7 @@ import { CONTRACT_ABI, CONTRACT_ADDRESS } from '@/lib/contract';
 import Header from './header';
 import Wallet from '../wallet';
 import { ethers, getBytes } from "ethers";
-import { Blocklock, SolidityEncoder, encodeCiphertextToSolidity, encodeCondition } from "blocklock-js";
+import { Blocklock, encodeCiphertextToSolidity, encodeCondition } from "blocklock-js";
 
 interface EncryptedMessage {
   id: number,
@@ -41,7 +41,7 @@ const BlockLockPage = () => {
     try {
       const provider = new ethers.BrowserProvider(walletClient.transport);
       const signer = await provider.getSigner();
-
+      console.log(signer);
       const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
 
       // Calculate target block height based on decryption time
@@ -56,29 +56,50 @@ const BlockLockPage = () => {
       const blockHeight = BigInt(currentBlock + blocksToAdd);
       console.log(`Current block: ${currentBlock}, Target block: ${blockHeight.toString()}`);
 
-      const encoder = new SolidityEncoder();
-      const msgBytes = encoder.encodeString(userMessage);
+      // const encoder = new SolidityEncoder();
+      // const msgBytes = encoder.encodeString(userMessage);
+      // const encodedMessage = getBytes(msgBytes);
+
+      // // Encrypt the message
+      // const blocklockjs = new Blocklock(
+      //   signer,
+      //   "0x82Fed730CbdeC5A2D8724F2e3b316a70A565e27e",
+      //   BigInt("84532")
+      // );
+
+      // const ciphertext = blocklockjs.encrypt(encodedMessage, blockHeight);
+
+      // // Create condition + call contract method
+      // const conditionBytes = encodeCondition(blockHeight);
+      // const callbackGasLimit = 400000;
+
+      // Set the message to encrypt
+      const msg = "Hello World"; // Example: BigInt for blocklock ETH transfer
+      const msgBytes = ethers.AbiCoder.defaultAbiCoder().encode(["string"], [msg]);
       const encodedMessage = getBytes(msgBytes);
+      console.log("Encoded message:", encodedMessage);
 
-      // Encrypt the message
-      const blocklockjs = new Blocklock(
-        signer,
-        "0x82Fed730CbdeC5A2D8724F2e3b316a70A565e27e",
-        BigInt("84532")
-      );
-
-      const ciphertext = blocklockjs.encrypt(encodedMessage, blockHeight);
-
-      // Create condition + call contract method
+      // Encrypt the encoded message usng Blocklock.js library
+      const blocklockjs = Blocklock.createFilecoinCalibnet(signer);
+      const cipherMessage = blocklockjs.encrypt(encodedMessage, blockHeight);
+      console.log("Ciphertext:", cipherMessage);
+      // Set the callback gas limit and price
+      // Best practice is to estimate the callback gas limit e.g., by extracting gas reports from Solidity tests
+      const callbackGasLimit = 700_000;
+      // Based on the callbackGasLimit, we can estimate the request price by calling BlocklockSender
+      // Note: Add a buffer to the estimated request price to cover for fluctuating gas prices between blocks
+      console.log(BigInt(callbackGasLimit));
+      const [requestCallBackPrice] = await blocklockjs.calculateRequestPriceNative(BigInt(callbackGasLimit))
+      console.log("Request CallBack price:", ethers.formatEther(requestCallBackPrice), "ETH");
       const conditionBytes = encodeCondition(blockHeight);
-      const callbackGasLimit = 400000;
 
       const tx = await contract.createTimelockRequestWithDirectFunding(
         callbackGasLimit,
         currentBlock,
         blockHeight,
         conditionBytes,
-        encodeCiphertextToSolidity(ciphertext)
+        encodeCiphertextToSolidity(cipherMessage),
+        { value: requestCallBackPrice }
       );
 
       const receipt = await tx.wait(1);
@@ -212,7 +233,7 @@ const BlockLockPage = () => {
                 <h2 className="text-xl text-gray-800 mb-6 font-funnel-display">Message Explorer</h2>
                 <button onClick={fetchRequest} >
                   <Image
-                    className={`${loading ? "animate-spin": ""} cursor-pointer mb-6`}
+                    className={`${loading ? "animate-spin" : ""} cursor-pointer mb-6`}
                     src="/assets/images/refresh.svg"
                     width={15}
                     height={15}
