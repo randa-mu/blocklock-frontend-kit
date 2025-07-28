@@ -1,5 +1,5 @@
 // Base Sepolia.
-export const CONTRACT_ADDRESS = "0xf55a0FaFb22CaCF155E7fe069Cc177D2e9089EC2"
+export const CONTRACT_ADDRESS = "0x6913a0E073e9009e282b7C5548809Ac8274f2e9B"
 
 export const CONTRACT_ABI = [
 	{

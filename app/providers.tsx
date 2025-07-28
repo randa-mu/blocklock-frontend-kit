@@ -7,7 +7,7 @@ import {
 } from '@rainbow-me/rainbowkit';
 import { WagmiProvider } from 'wagmi';
 import {
-    filecoinCalibration
+    baseSepolia
 } from 'wagmi/chains';
 import {
     QueryClientProvider,
@@ -20,10 +20,10 @@ const queryClient = new QueryClient();
 const config = getDefaultConfig({
     appName: 'Randamu',
     projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID!,
-    chains: [filecoinCalibration],
+    chains: [baseSepolia],
     ssr: true,
     transports: {
-        [filecoinCalibration.id]: http('https://api.calibration.node.glif.io/rpc/v1')
+        [baseSepolia.id]: http(`https://base-sepolia.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_KEY}`)
     }
 });
 

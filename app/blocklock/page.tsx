@@ -40,6 +40,7 @@ const BlockLockPage = () => {
 
     try {
       const provider = new ethers.BrowserProvider(walletClient.transport);
+      const jsonProvider = new ethers.JsonRpcProvider(`https://base-sepolia.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_KEY}`);
       const signer = await provider.getSigner();
       console.log(signer);
       const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
@@ -56,31 +57,13 @@ const BlockLockPage = () => {
       const blockHeight = BigInt(currentBlock + blocksToAdd);
       console.log(`Current block: ${currentBlock}, Target block: ${blockHeight.toString()}`);
 
-      // const encoder = new SolidityEncoder();
-      // const msgBytes = encoder.encodeString(userMessage);
-      // const encodedMessage = getBytes(msgBytes);
-
-      // // Encrypt the message
-      // const blocklockjs = new Blocklock(
-      //   signer,
-      //   "0x82Fed730CbdeC5A2D8724F2e3b316a70A565e27e",
-      //   BigInt("84532")
-      // );
-
-      // const ciphertext = blocklockjs.encrypt(encodedMessage, blockHeight);
-
-      // // Create condition + call contract method
-      // const conditionBytes = encodeCondition(blockHeight);
-      // const callbackGasLimit = 400000;
-
       // Set the message to encrypt
-      const msg = "Hello World"; // Example: BigInt for blocklock ETH transfer
-      const msgBytes = ethers.AbiCoder.defaultAbiCoder().encode(["string"], [msg]);
+      const msgBytes = ethers.AbiCoder.defaultAbiCoder().encode(["string"], [userMessage]);
       const encodedMessage = getBytes(msgBytes);
       console.log("Encoded message:", encodedMessage);
 
       // Encrypt the encoded message usng Blocklock.js library
-      const blocklockjs = Blocklock.createFilecoinCalibnet(signer);
+      const blocklockjs = Blocklock.createBaseSepolia(jsonProvider);
       const cipherMessage = blocklockjs.encrypt(encodedMessage, blockHeight);
       console.log("Ciphertext:", cipherMessage);
       // Set the callback gas limit and price
@@ -132,7 +115,7 @@ const BlockLockPage = () => {
       const requestIdCount = await contract.currentRequestId();
       console.log("Request ID: ", requestIdCount)
       const temp = [];
-      for (let i = 42; i <= requestIdCount; i++) {
+      for (let i = 128; i <= requestIdCount; i++) {
         console.log(i)
         const r = await contract.userRequests(i);
         if (r.requestedBy == address) {
@@ -227,7 +210,7 @@ const BlockLockPage = () => {
               </div>
             </div>
           ) : (
-            <div className="bg-white border border-gray-200 p-4 sm:p-8 h-[480px] flex flex-col">
+            <div className="bg-white border border-gray-200 p-4 sm:p-8 h-[520px] flex flex-col">
               {/* Explorer Section */}
               <div className='flex justify-between'>
                 <h2 className="text-xl text-gray-800 mb-6 font-funnel-display">Message Explorer</h2>
