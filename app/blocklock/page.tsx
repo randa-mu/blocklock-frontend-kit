@@ -172,7 +172,7 @@ const BlockLockPage = () => {
                     placeholder="Enter your text here..."
                   />
                 </div>
-                <div>
+                <div className="hidden sm:block">
                   <div className="w-full h-[280px] flex items-center justify-center">
                     <img
                       src="/assets/images/blocklock.gif"
