@@ -15,7 +15,7 @@ export default function Wallet() {
             Blocklock Encryption{" "}
           </h1>
           <p className="font-funnel-display text-xl mb-5">
-            Securely encrypt your data until a designated time
+            Securely encrypt text until a future time.
           </p>
           <WalletConnect />
         </div>
