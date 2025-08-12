@@ -29,3 +29,68 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Gentle blink for pixel background squares */
+@keyframes pixelBlink {
+  0%, 100% {
+    opacity: 0.25;
+    transform: scale(0.95);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Override datetime-local placeholder and text colors */
+input[type="datetime-local"] {
+  color: #9ca3af; /* gray-400 - default placeholder color */
+}
+
+input[type="datetime-local"]::-webkit-datetime-edit-text,
+input[type="datetime-local"]::-webkit-datetime-edit-month-field,
+input[type="datetime-local"]::-webkit-datetime-edit-day-field,
+input[type="datetime-local"]::-webkit-datetime-edit-year-field,
+input[type="datetime-local"]::-webkit-datetime-edit-hour-field,
+input[type="datetime-local"]::-webkit-datetime-edit-minute-field,
+input[type="datetime-local"]::-webkit-datetime-edit-second-field,
+input[type="datetime-local"]::-webkit-datetime-edit-millisecond-field,
+input[type="datetime-local"]::-webkit-datetime-edit-meridiem-field {
+  color: inherit;
+}
+
+/* When input has a value (not empty), make text black */
+input[type="datetime-local"]:not(:placeholder-shown),
+input[type="datetime-local"]:valid {
+  color: #111827; /* gray-900 - black when selected */
+}
+
+/* Ensure the individual fields inherit the color */
+input[type="datetime-local"]:not(:placeholder-shown)::-webkit-datetime-edit-text,
+input[type="datetime-local"]:not(:placeholder-shown)::-webkit-datetime-edit-month-field,
+input[type="datetime-local"]:not(:placeholder-shown)::-webkit-datetime-edit-day-field,
+input[type="datetime-local"]:not(:placeholder-shown)::-webkit-datetime-edit-year-field,
+input[type="datetime-local"]:not(:placeholder-shown)::-webkit-datetime-edit-hour-field,
+input[type="datetime-local"]:not(:placeholder-shown)::-webkit-datetime-edit-minute-field,
+input[type="datetime-local"]:not(:placeholder-shown)::-webkit-datetime-edit-second-field,
+input[type="datetime-local"]:not(:placeholder-shown)::-webkit-datetime-edit-millisecond-field,
+input[type="datetime-local"]:not(:placeholder-shown)::-webkit-datetime-edit-meridiem-field,
+input[type="datetime-local"]:valid::-webkit-datetime-edit-text,
+input[type="datetime-local"]:valid::-webkit-datetime-edit-month-field,
+input[type="datetime-local"]:valid::-webkit-datetime-edit-day-field,
+input[type="datetime-local"]:valid::-webkit-datetime-edit-year-field,
+input[type="datetime-local"]:valid::-webkit-datetime-edit-hour-field,
+input[type="datetime-local"]:valid::-webkit-datetime-edit-minute-field,
+input[type="datetime-local"]:valid::-webkit-datetime-edit-second-field,
+input[type="datetime-local"]:valid::-webkit-datetime-edit-millisecond-field,
+input[type="datetime-local"]:valid::-webkit-datetime-edit-meridiem-field {
+  color: #111827; /* gray-900 - black when selected */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
