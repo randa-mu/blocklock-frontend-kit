@@ -1,12 +1,12 @@
-"use client"
+"use client";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Image from "next/image";
-import Link from 'next/link'
+import Link from "next/link";
 
 const Header = () => {
-
   return (
-    <div className="top-0 w-full h-20 flex items-center z-10">
-      <div className="relative lg:left-8 left-4">
+    <div className="flex justify-between items-center pt-20 md:pt-32 container mx-auto px-4 md:px-16">
+      <div className="">
         <Link href="/">
           <Image
             className="cursor-pointer hidden lg:block"
@@ -15,9 +15,7 @@ const Header = () => {
             height={150}
             alt="Randamu Logo"
           />
-          <div
-            className="lg:hidden justify-center items-center flex"
-          >
+          <div className="lg:hidden justify-center items-center flex">
             <Image
               className="cursor-pointer "
               src="/assets/logos/logo.svg"
@@ -28,7 +26,8 @@ const Header = () => {
           </div>
         </Link>
       </div>
-    </div >
+      <ConnectButton />
+    </div>
   );
 };
 
