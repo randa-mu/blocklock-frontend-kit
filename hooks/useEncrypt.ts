@@ -8,7 +8,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useEthersProvider, useEthersSigner } from "@/hooks/useEthers";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
-import { CONTRACT_ABI } from "@/lib/contract";
+import { BLOCKLOCK_CONTRACT_ABI, CONTRACT_ABI } from "@/lib/contract";
 import { useNetworkConfig } from "./useNetworkConfig";
 
 export const useEncrypt = () => {
@@ -107,8 +107,28 @@ export const useEncrypt = () => {
       console.log("Ciphertext:", cipherMessage);
 
       const callbackGasLimit = gasConfig.callbackGasLimitDefault;
-      const [requestCallBackPrice] =
-        await blocklockjs.calculateRequestPriceNative(BigInt(callbackGasLimit));
+
+      const feeData = await provider.getFeeData();
+
+      if (!feeData.maxFeePerGas) {
+        throw new Error("No fee data found");
+      }
+
+      const blocklockContract = new ethers.Contract(
+        gasConfig.blocklockAddress,
+        BLOCKLOCK_CONTRACT_ABI,
+        signer
+      );
+
+      const requestPrice = (await blocklockContract.estimateRequestPriceNative(
+        callbackGasLimit,
+        feeData.maxFeePerGas
+      )) as bigint;
+
+      const requestCallBackPrice =
+        requestPrice +
+        (requestPrice * BigInt(gasConfig.gasBufferPercent)) / BigInt(100);
+
       console.log(
         "Request CallBack price:",
         ethers.formatEther(requestCallBackPrice),

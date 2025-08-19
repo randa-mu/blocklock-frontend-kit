@@ -37,6 +37,7 @@ export const CHAIN_ID_GAS_CONFIG = {
     gasBufferPercent: 100,
     callbackGasLimitDefault: 100_000,
     gasMultiplierDefault: 10,
+    blocklockAddress: "0x82Fed730CbdeC5A2D8724F2e3b316a70A565e27e",
   },
   "314": {
     gasLimit: 5_000_000,
@@ -45,6 +46,7 @@ export const CHAIN_ID_GAS_CONFIG = {
     gasBufferPercent: 400,
     callbackGasLimitDefault: 444_000_000,
     gasMultiplierDefault: 50,
+    blocklockAddress: "0x34092470CC59A097d770523931E3bC179370B44b",
   },
   "314159": {
     gasLimit: 5_000_000,
@@ -53,6 +55,7 @@ export const CHAIN_ID_GAS_CONFIG = {
     gasBufferPercent: 400,
     callbackGasLimitDefault: 444_000_000,
     gasMultiplierDefault: 50,
+    blocklockAddress: "0xF00aB3B64c81b6Ce51f8220EB2bFaa2D469cf702",
   },
   "421614": {
     gasLimit: 100_000,
@@ -61,6 +64,7 @@ export const CHAIN_ID_GAS_CONFIG = {
     gasBufferPercent: 100,
     callbackGasLimitDefault: 1_000_000,
     gasMultiplierDefault: 10,
+    blocklockAddress: "0xd22302849a87d5B00f13e504581BC086300DA080",
   },
   "11155420": {
     gasLimit: 100_000,
@@ -69,6 +73,7 @@ export const CHAIN_ID_GAS_CONFIG = {
     gasBufferPercent: 100,
     callbackGasLimitDefault: 1_000_000,
     gasMultiplierDefault: 10,
+    blocklockAddress: "0xd22302849a87d5B00f13e504581BC086300DA080",
   },
   "84532": {
     gasLimit: 100_000,
@@ -77,8 +82,22 @@ export const CHAIN_ID_GAS_CONFIG = {
     gasBufferPercent: 100,
     callbackGasLimitDefault: 1_000_000,
     gasMultiplierDefault: 10,
+    blocklockAddress: "0x82Fed730CbdeC5A2D8724F2e3b316a70A565e27e",
   },
 };
+
+export const BLOCKLOCK_CONTRACT_ABI = [
+  {
+    inputs: [
+      { internalType: "uint32", name: "_callbackGasLimit", type: "uint32" },
+      { internalType: "uint256", name: "_requestGasPriceWei", type: "uint256" },
+    ],
+    name: "estimateRequestPriceNative",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+];
 
 export const CONTRACT_ABI = [
   {
