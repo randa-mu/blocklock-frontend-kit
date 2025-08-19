@@ -16,10 +16,11 @@ const BlockLockPage = () => {
     handleEncrypt: encryptMutation,
     setActiveTab,
     setUserMessage,
-    setDecryptionTime,
+    setBlocksAhead,
     activeTab,
     userMessage,
-    decryptionTime,
+    blocksAhead,
+    estimatedDecryptionTime,
   } = useEncrypt();
 
   const {
@@ -61,7 +62,7 @@ const BlockLockPage = () => {
           </div>
         </div>
         {activeTab === "text" ? (
-          <div className="bg-white border border-gray-200 p-4 sm:p-8 h-[480px]">
+          <div className="bg-white border border-gray-200 p-4 sm:p-8 h-[550px]">
             {/* Text Areas Section - Stack on mobile, side by side on desktop */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8 mb-4 sm:mb-8">
               <div>
@@ -86,29 +87,39 @@ const BlockLockPage = () => {
               </div>
             </div>
 
-            {/* Decryption Time Section and Encrypt Button - Stack on mobile, side by side on desktop */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8">
+            {/* Blocks Ahead Section and Encrypt Button - Stack on mobile, side by side on desktop */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8 p-4">
               <div>
                 <h2 className="text-xl text-gray-700 mb-4 font-funnel-display">
                   Decryption Time
                 </h2>
+                <p className="text-lg text-gray-700 mb-4 font-funnel-display">
+                  Blocks Ahead
+                </p>
                 <div className="relative">
                   <input
-                    type="datetime-local"
-                    value={decryptionTime}
-                    onChange={(e) => setDecryptionTime(e.target.value)}
+                    type="number"
+                    inputMode="numeric"
+                    min={1}
+                    placeholder="Enter number of blocks ahead"
+                    value={blocksAhead}
+                    onChange={(e) => setBlocksAhead(e.target.value)}
                     className="font-funnel-display w-full px-4 py-2 border border-gray-300 text-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                    min={new Date().toISOString().slice(0, 16)}
                   />
+                  {estimatedDecryptionTime && (
+                    <p className="text-sm text-gray-500 mt-2 font-funnel-display">
+                      Estimated decryption: {estimatedDecryptionTime}
+                    </p>
+                  )}
                 </div>
               </div>
 
-              <div className="flex items-end font-funnel-display">
+              <div className="flex items-end font-funnel-display mb-4">
                 <button
-                  onClick={() => handleEncrypt({ userMessage, decryptionTime })}
-                  disabled={!userMessage || !decryptionTime || isEncrypting}
+                  onClick={() => handleEncrypt({ userMessage, blocksAhead })}
+                  disabled={!userMessage || !blocksAhead || isEncrypting}
                   className={`font-funnel-display w-full h-11 text-gray-900 border border-gray-200 hover:border-gray-400 transition-colors text-center ${
-                    !userMessage || !decryptionTime
+                    !userMessage || !blocksAhead
                       ? "opacity-50 cursor-not-allowed"
                       : ""
                   }`}
@@ -122,7 +133,7 @@ const BlockLockPage = () => {
               </div>
             </div>
             {isEncryptError && (
-              <div className="text-red-500 font-funnel-display ">
+              <div className="text-red-500 font-funnel-display max-w-5xl overflow-auto py-5">
                 <div>{encryptError.message}</div>
               </div>
             )}

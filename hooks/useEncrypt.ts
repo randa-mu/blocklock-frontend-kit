@@ -6,7 +6,7 @@ import {
 } from "blocklock-js";
 import { useMutation } from "@tanstack/react-query";
 import { useEthersProvider, useEthersSigner } from "@/hooks/useEthers";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { CONTRACT_ABI } from "@/lib/contract";
 import { useNetworkConfig } from "./useNetworkConfig";
@@ -14,18 +14,61 @@ import { useNetworkConfig } from "./useNetworkConfig";
 export const useEncrypt = () => {
   const [activeTab, setActiveTab] = useState("text");
   const [userMessage, setUserMessage] = useState("");
-  const [decryptionTime, setDecryptionTime] = useState("");
+  const [blocksAhead, setBlocksAhead] = useState("");
+  const [estimatedDecryptionTime, setEstimatedDecryptionTime] = useState("");
   const signer = useEthersSigner();
   const provider = useEthersProvider();
   const { chainId } = useAccount();
   const { CONTRACT_ADDRESS, secondsPerBlock, gasConfig } = useNetworkConfig();
+
+  useEffect(() => {
+    const updateEstimate = async () => {
+      try {
+        if (!provider || !secondsPerBlock || !blocksAhead) {
+          setEstimatedDecryptionTime("");
+          return;
+        }
+        const currentBlock = await provider.getBlockNumber();
+        const currentBlockData = await provider.getBlock(currentBlock);
+        const currentTimestamp =
+          currentBlockData?.timestamp || Math.floor(Date.now() / 1000);
+
+        const blocks = Number(blocksAhead);
+        if (Number.isNaN(blocks) || blocks <= 0) {
+          setEstimatedDecryptionTime("");
+          return;
+        }
+
+        const targetTimestamp = currentTimestamp + blocks * secondsPerBlock;
+        const diffSeconds = Math.max(0, targetTimestamp - currentTimestamp);
+
+        const days = Math.floor(diffSeconds / 86400);
+        const hours = Math.floor((diffSeconds % 86400) / 3600);
+        const minutes = Math.floor((diffSeconds % 3600) / 60);
+        const seconds = Math.floor(diffSeconds % 60);
+
+        const parts: string[] = [];
+        if (days) parts.push(`${days}d`);
+        if (hours) parts.push(`${hours}h`);
+        if (minutes) parts.push(`${minutes}m`);
+        if (seconds || parts.length === 0) parts.push(`${seconds}s`);
+
+        const absolute = new Date(targetTimestamp * 1000).toLocaleString();
+        setEstimatedDecryptionTime(`in ~${parts.join(" ")} (≈ ${absolute})`);
+      } catch {
+        setEstimatedDecryptionTime("");
+      }
+    };
+
+    updateEstimate();
+  }, [provider, secondsPerBlock, blocksAhead]);
   const handleEncrypt = useMutation({
     mutationFn: async ({
       userMessage,
-      decryptionTime,
+      blocksAhead,
     }: {
       userMessage: string;
-      decryptionTime: string;
+      blocksAhead: string;
     }) => {
       if (!signer || !provider || !chainId) {
         throw new Error("Please connect your wallet");
@@ -37,18 +80,13 @@ export const useEncrypt = () => {
         signer
       );
 
-      // Calculate target block height based on decryption time
+      // Calculate target block height based on blocks ahead
       const currentBlock = await provider.getBlockNumber();
-      const currentBlockData = await provider.getBlock(currentBlock);
-      const currentTimestamp =
-        currentBlockData?.timestamp || Math.floor(Date.now() / 1000);
 
-      const targetTimestamp = Math.floor(
-        new Date(decryptionTime).getTime() / 1000
-      );
-      const blocksToAdd = Math.ceil(
-        (targetTimestamp - currentTimestamp) / secondsPerBlock
-      );
+      const blocksToAdd = Number(blocksAhead);
+      if (Number.isNaN(blocksToAdd) || blocksToAdd <= 0) {
+        throw new Error("Please enter a valid number of blocks ahead");
+      }
 
       const blockHeight = BigInt(currentBlock + blocksToAdd);
       console.log(
@@ -95,7 +133,8 @@ export const useEncrypt = () => {
       console.log("Ciphertext:", cipherMessage);
       setActiveTab("decrypt");
       setUserMessage(""); // Clear the input
-      setDecryptionTime(""); // Clear the time input
+      setBlocksAhead(""); // Clear the blocks input
+      setEstimatedDecryptionTime("");
     },
   });
 
@@ -103,9 +142,10 @@ export const useEncrypt = () => {
     handleEncrypt,
     setActiveTab,
     setUserMessage,
-    setDecryptionTime,
+    setBlocksAhead,
     activeTab,
     userMessage,
-    decryptionTime,
+    blocksAhead,
+    estimatedDecryptionTime,
   };
 };
