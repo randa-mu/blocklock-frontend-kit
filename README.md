@@ -31,6 +31,7 @@ npm install
 Create a `.env.local` in the project root:
 ```bash
 NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID=your_walletconnect_project_id
+NEXT_PUBLIC_ALCHEMY_KEY=your_alchemy_api_key
 ```
 
 3. Start the app:
@@ -54,11 +55,6 @@ Open http://localhost:3000
    - Review the estimated decryption time
    - Click Encrypt to send the request on-chain
 3. Switch to Explorer to refresh and view recent requests and any available decrypted messages
-
-Notes:
-- The default tab is `Encrypt`. Explorer is entered explicitly via its button.
-- The refresh icon spins while a fetch is in-flight.
-- The decryption time estimate is displayed without causing layout shift.
 
 ## 🛠 Tech Stack
 
@@ -104,12 +100,6 @@ public/
 - `npm run build` – production build
 - `npm run start` – start production server
 - `npm run lint` – run ESLint
-
-## ❗ Troubleshooting
-
-- Console shows "Analytics SDK: TypeError: Failed to fetch": This often originates from injected browser extensions (e.g., Coinbase Wallet) and is harmless. Test in an incognito window with extensions disabled to confirm.
-- Ensure you are on a supported network with funded account to send transactions.
-- If fee data is missing from your RPC, try switching RPC endpoints.
 
 ## 📜 License
 
