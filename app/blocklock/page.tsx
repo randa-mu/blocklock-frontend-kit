@@ -36,6 +36,8 @@ const BlockLockPage = () => {
     refetch,
   } = useExplorer(setActiveTab);
 
+  const [isRefreshing, setIsRefreshing] = React.useState(false);
+
   return isConnected ? (
     <div className="bg-white-pattern">
       <Header />
@@ -55,7 +57,10 @@ const BlockLockPage = () => {
               className={`w-full sm:w-[200px] py-3 font-funnel-sans text-gray-900 border border-gray-200 hover:border-gray-400 transition-colors text-center ${
                 activeTab === "decrypt" ? "border-gray-400 bg-white" : ""
               }`}
-              onClick={() => refetch()}
+              onClick={() => {
+                setActiveTab("decrypt");
+                refetch();
+              }}
             >
               Explorer
             </button>
@@ -107,14 +112,14 @@ const BlockLockPage = () => {
                     className="font-funnel-display w-full px-4 py-2 border border-gray-300 text-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   />
                   {estimatedDecryptionTime && (
-                    <p className="text-sm text-gray-500 mt-2 font-funnel-display">
+                    <p className="text-sm text-gray-500 font-funnel-display absolute left-0 top-full mt-2">
                       Estimated decryption: {estimatedDecryptionTime}
                     </p>
                   )}
                 </div>
               </div>
 
-              <div className="flex items-end font-funnel-display mb-4">
+              <div className="flex items-end font-funnel-display">
                 <button
                   onClick={() => handleEncrypt({ userMessage, blocksAhead })}
                   disabled={!userMessage || !blocksAhead || isEncrypting}
@@ -145,10 +150,19 @@ const BlockLockPage = () => {
               <h2 className="text-xl text-gray-800 mb-6 font-funnel-display">
                 Message Explorer
               </h2>
-              <button onClick={() => refetch()}>
+              <button
+                onClick={async () => {
+                  setIsRefreshing(true);
+                  try {
+                    await refetch();
+                  } finally {
+                    setIsRefreshing(false);
+                  }
+                }}
+              >
                 <Image
                   className={`${
-                    isLoadingRequests ? "animate-spin" : ""
+                    isRefreshing || isLoadingRequests ? "animate-spin" : ""
                   } cursor-pointer mb-6`}
                   src="/assets/images/refresh.svg"
                   width={15}

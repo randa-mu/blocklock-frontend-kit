@@ -15,7 +15,6 @@ export const useExplorer = (setActiveTab: (tab: string) => void) => {
   const getRequests = useQuery({
     queryKey: ["userRequests", chainId, address, CONTRACT_ADDRESS],
     queryFn: async () => {
-      setActiveTab("decrypt");
       try {
         if (!signer || !provider || !chainId) {
           return [];
