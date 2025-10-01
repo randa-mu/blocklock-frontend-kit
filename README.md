@@ -1,120 +1,122 @@
 # Blocklock Frontend Kit
 
-A Next.js web application for time-locked encryption using blockchain technology. This kit allows users to encrypt messages that can only be decrypted after a specified time period using the Blocklock protocol.
+A Next.js application showcasing time-locked encryption using the Blocklock protocol. Users can encrypt plaintext to be decrypted after a target block height, and browse previously submitted requests in an explorer.
 
-## 🌟 Features
+## ✨ Features
 
-- **Time-locked Encryption**: Encrypt messages that automatically decrypt at a future date
-- **Multi-chain Support**: Compatible with multiple blockchain networks including Filecoin, Base, Arbitrum, and Optimism
-- **Wallet Integration**: Connect with popular crypto wallets via RainbowKit
-- **Explorer Interface**: View and track your encrypted messages and decryption status
-- **Responsive Design**: Mobile-friendly interface with Tailwind CSS
+- **Time-locked encryption UI**: Enter plaintext, set blocks ahead, and submit an on-chain timelock request
+- **Decryption time estimate**: Live estimate based on chain seconds-per-block
+- **Message explorer**: Fetches recent requests and shows decrypted messages when available
+- **Wallet connectivity**: RainbowKit + Wagmi for multi-wallet support
+- **Multi-network**: Works across multiple EVM networks defined in `useNetworkConfig`
+- **Responsive UI**: Tailwind CSS styling
 
-## 🚀 Getting Started
+## 🚀 Quick Start
 
 ### Prerequisites
 
-- Node.js >= 22.0.0
-- A crypto wallet (MetaMask, etc.)
-- Network connection to supported blockchains
+- Node.js 22+
+- A browser wallet (e.g., MetaMask, Coinbase Wallet)
 
-### Installation
+### Setup
 
-1. Clone the repository:
+1. Clone and install:
 ```bash
-git clone <repository-url>
+git clone https://github.com/randa-mu/blocklock-frontend-kit
 cd blocklock-frontend-kit
-```
-
-2. Install dependencies:
-```bash
 npm install
 ```
 
-3. Start the development server:
+2. Configure environment:
+Create a `.env.local` in the project root:
+```bash
+NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID=your_walletconnect_project_id
+```
+
+3. Start the app:
 ```bash
 npm run dev
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser
+Open http://localhost:3000
 
-## 🛠️ Tech Stack
+## ⚙️ Configuration
 
-- **Framework**: Next.js 15.3.0 with React 18
-- **Styling**: Tailwind CSS
-- **Wallet Connection**: RainbowKit + Wagmi
-- **Blockchain Integration**: Ethers.js + Blocklock.js
-- **State Management**: React Query (@tanstack/react-query)
-- **Icons**: Lucide React + React Icons
-- **TypeScript**: Full type safety
+- `NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID`: Required by RainbowKit for WalletConnect. Obtain from WalletConnect Cloud.
+- Network settings (RPCs, contract addresses, gas config, seconds-per-block) are provided via `hooks/useNetworkConfig.ts` and `lib/contract.ts`.
 
-## 🔧 Supported Networks
+## 🧭 Usage
 
-- **Filecoin Mainnet** (Chain ID: 314)
-- **Filecoin Calibration** (Chain ID: 314159)  
-- **Arbitrum Sepolia** (Chain ID: 421614)
-- **Optimism Sepolia** (Chain ID: 11155420)
-- **Base Sepolia** (Chain ID: 84532)
+1. Connect your wallet
+2. In the Encrypt tab:
+   - Enter plaintext
+   - Set "Blocks Ahead" (positive integer)
+   - Review the estimated decryption time
+   - Click Encrypt to send the request on-chain
+3. Switch to Explorer to refresh and view recent requests and any available decrypted messages
 
-## 🔒 How It Works
+Notes:
+- The default tab is `Encrypt`. Explorer is entered explicitly via its button.
+- The refresh icon spins while a fetch is in-flight.
+- The decryption time estimate is displayed without causing layout shift.
 
-1. **Connect Wallet**: Connect your crypto wallet to the application
-2. **Enter Message**: Type the message you want to encrypt
-3. **Set Time**: Choose when the message should be decryptable
-4. **Encrypt**: The app calculates the target block height and encrypts your message
-5. **Explorer**: View your encrypted messages and their decryption status
+## 🛠 Tech Stack
 
-## 📁 Project Structure
+- Next.js 15 + React 18
+- TypeScript
+- Tailwind CSS
+- Wagmi + RainbowKit
+- Ethers.js
+- React Query (@tanstack/react-query)
+
+## 📂 Project Structure
 
 ```
-├── app/                    # Next.js app directory
-│   ├── blocklock/         # Main encryption interface
-│   ├── layout.tsx         # Root layout component
-│   └── page.tsx           # Homepage
-├── components/            # Reusable UI components
-├── hooks/                 # Custom React hooks
-│   ├── useEncrypt.ts      # Encryption logic
-│   ├── useEthers.ts       # Ethers.js integration
-│   ├── useExplorer.ts     # Message explorer functionality
-│   └── useNetworkConfig.ts # Network configurations
-├── lib/                   # Utilities and configurations
-│   └── contract.ts        # Smart contract ABIs and addresses
-└── public/                # Static assets
+app/
+  blocklock/
+    header.tsx      # Header for Blocklock page
+    page.tsx        # Main UI (Encrypt/Explorer)
+  layout.tsx
+  page.tsx
+components/
+  Footer.tsx
+  header.tsx
+  walletConnect.tsx
+hooks/
+  useEncrypt.ts       # Encryption flow, state, estimates
+  useExplorer.ts      # Explorer data fetching
+  useEthers.ts        # Provider/signer helpers
+  useNetworkConfig.ts # Networks + gas config
+lib/
+  contract.ts         # ABIs + addresses
+public/
+  assets/...          # Images and logos
 ```
 
-## 🔗 Smart Contract Integration
+## 🔐 How It Works (High Level)
 
-The app interacts with deployed Blocklock smart contracts on various networks. Each contract handles:
+- `useEncrypt` computes a target block from the current block + blocksAhead, encrypts the message via Blocklock.js, estimates fees, and submits a timelock request to the configured contract. After success, it clears inputs and switches to the Explorer tab.
+- `useExplorer` queries recent requests from the contract and displays them, including decrypted messages when available.
 
-- Time-locked encryption requests
-- Callback gas limit calculations
-- Message storage and retrieval
-- Decryption key management
+## 🧪 Scripts
 
-## 🎨 UI Components
+- `npm run dev` – start development server
+- `npm run build` – production build
+- `npm run start` – start production server
+- `npm run lint` – run ESLint
 
-- **Landing Page**: Introduction and navigation to encryption tool
-- **Blocklock Interface**: Main encryption/decryption interface with tabs
-- **Explorer**: View encrypted messages with block numbers and status
-- **Wallet Connection**: RainbowKit integration for wallet management
+## ❗ Troubleshooting
 
-## 📝 Scripts
+- Console shows "Analytics SDK: TypeError: Failed to fetch": This often originates from injected browser extensions (e.g., Coinbase Wallet) and is harmless. Test in an incognito window with extensions disabled to confirm.
+- Ensure you are on a supported network with funded account to send transactions.
+- If fee data is missing from your RPC, try switching RPC endpoints.
 
-- `npm run dev`: Start development server with Turbopack
-- `npm run build`: Build for production
-- `npm run start`: Start production server
-- `npm run lint`: Run ESLint
-
-## 🤝 Contributing
-
-This is a starter kit for building time-locked encryption applications. Feel free to fork and extend it for your needs.
-
-## 📄 License
+## 📜 License
 
 Built with ❤️ by FIL-B
 
 ## 🔗 Links
 
-- [Documentation](https://docs.randa.mu/)
-- [GitHub](https://github.com/randa-mu)
-- [Twitter](https://x.com/RandamuInc/)
+- Documentation: https://docs.randa.mu/
+- GitHub: https://github.com/randa-mu
+- X (Twitter): https://x.com/RandamuInc/
