@@ -18,6 +18,7 @@ export const useEncrypt = () => {
   const [estimatedDecryptionTime, setEstimatedDecryptionTime] = useState("");
   const signer = useEthersSigner();
   const provider = useEthersProvider();
+  const jsonProvider = new ethers.JsonRpcProvider(`https://base-sepolia.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_KEY}`);
   const { chainId } = useAccount();
   const { CONTRACT_ADDRESS, secondsPerBlock, gasConfig } = useNetworkConfig();
 
@@ -102,13 +103,13 @@ export const useEncrypt = () => {
       console.log("Encoded message:", encodedMessage);
 
       // Encrypt the encoded message usng Blocklock.js library
-      const blocklockjs = Blocklock.createFromChainId(signer, chainId);
+      const blocklockjs = Blocklock.createFromChainId(jsonProvider, chainId);
       const cipherMessage = blocklockjs.encrypt(encodedMessage, blockHeight);
       console.log("Ciphertext:", cipherMessage);
 
       const callbackGasLimit = gasConfig.callbackGasLimitDefault;
 
-      const feeData = await provider.getFeeData();
+      const feeData = await jsonProvider.getFeeData();
 
       if (!feeData.maxFeePerGas) {
         throw new Error("No fee data found");
